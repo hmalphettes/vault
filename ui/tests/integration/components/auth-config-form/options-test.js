@@ -16,11 +16,6 @@ module('Integration | Component | auth-config-form options', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.lookup('service:flash-messages').registerTypes(['success']);
-    component.setContext(this);
-  });
-
-  hooks.afterEach(function() {
-    component.removeContext();
   });
 
   test('it submits data correctly', async function(assert) {

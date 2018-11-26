@@ -15,14 +15,6 @@ const component = create(license);
 module('Integration | Component | license info', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
-    component.setContext(this);
-  });
-
-  hooks.afterEach(function() {
-    component.removeContext();
-  });
-
   const LICENSE_WARNING_TEXT = `Warning Your temporary license expires in 30 minutes and your vault will seal. Please enter a valid license below.`;
 
   test('it renders properly for temporary license', async function(assert) {

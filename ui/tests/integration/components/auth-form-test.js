@@ -48,14 +48,12 @@ module('Integration | Component | auth form', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.lookup('service:csp-event').attach();
-    component.setContext(this);
     this.owner.register('service:router', routerService);
     this.router = this.owner.lookup('service:router');
   });
 
   hooks.afterEach(function() {
     this.owner.lookup('service:csp-event').remove();
-    component.removeContext();
   });
 
   const CSP_ERR_TEXT = `Error This is a standby Vault node but can't communicate with the active node via request forwarding. Sign in at the active node to use the Vault UI.`;
