@@ -158,12 +158,17 @@ export default Component.extend(DEFAULTS, {
 
   handleError(e) {
     this.set('loading', false);
-    let errors = e.errors.map(error => {
-      if (error.detail) {
-        return error.detail;
-      }
-      return error;
-    });
+    let errors;
+    if (e.errors) {
+      errors = e.errors.map(error => {
+        if (error.detail) {
+          return error.detail;
+        }
+        return error;
+      });
+    } else {
+      errors = [e];
+    }
     this.set('error', `Authentication failed: ${errors.join('.')}`);
   },
 
