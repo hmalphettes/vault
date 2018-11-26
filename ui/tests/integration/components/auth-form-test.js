@@ -1,13 +1,13 @@
 import { later, run } from '@ember/runloop';
 import EmberObject from '@ember/object';
 import { resolve } from 'rsvp';
-import $ from 'jquery';
 import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 import { supportedAuthBackends } from 'vault/helpers/supported-auth-backends';
 import hbs from 'htmlbars-inline-precompile';
+import fetch from 'fetch';
 import sinon from 'sinon';
 import Pretender from 'pretender';
 import { create } from 'ember-cli-page-object';
@@ -17,8 +17,8 @@ const component = create(authForm);
 const BACKENDS = supportedAuthBackends();
 
 const authService = Service.extend({
-  authenticate() {
-    return $.getJSON('http://localhost:2000');
+  async authenticate() {
+    return fetch('http://localhost:2000');
   },
   setLastFetch() {},
 });
@@ -209,7 +209,7 @@ module('Integration | Component | auth form', function(hooks) {
       this.post('/v1/sys/wrapping/unwrap', () => {
         return [
           200,
-          { 'Content-Type': 'application/json' },
+          { 'content-type': 'application/json' },
           JSON.stringify({
             auth: {
               client_token: '12345',
@@ -227,7 +227,7 @@ module('Integration | Component | auth form', function(hooks) {
     await settled();
     assert.equal(server.handledRequests[0].url, '/v1/sys/wrapping/unwrap', 'makes call to unwrap the token');
     assert.equal(
-      server.handledRequests[0].requestHeaders['X-Vault-Token'],
+      server.handledRequests[0].requestHeaders['x-vault-token'],
       wrappedToken,
       'uses passed wrapped token for the unwrap'
     );
