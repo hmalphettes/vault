@@ -19,8 +19,8 @@ func shouldForward(c *Core, routeErr error) bool {
 	return false
 }
 
-func possiblyForward(ctx context.Context, c *Core, req *logical.Request, resp *logical.Response, routeErr error) (*logical.Response, error) {
-	return resp, routeErr
+func forward(ctx context.Context, c *Core, req *logical.Request) (*logical.Response, error) {
+	panic("forward called in OSS Vault")
 }
 
 func getLeaseRegisterFunc(c *Core) (func(context.Context, *logical.Request, *logical.Response) (string, error), error) {
