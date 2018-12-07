@@ -132,7 +132,16 @@ type unlockInformation struct {
 }
 
 type counters struct {
-	requests uint64
+	// activePath is set at startup to the path we primed the requests counter from,
+	// or empty string if there wasn't a relevant path - either because this is the first
+	// time Vault starts with the feature enabled, or because Vault hadn't written
+	// out the request counter this month yet.
+	// Whenever we write out the counters, we update activePath if it's no longer
+	// accurate.  This coincides with a reset of the counters.
+	// There's no lock because the only reader/writer of activePath is the goroutine
+	// doing background syncs.
+	activePath string
+	requests   uint64
 }
 
 // Core is used as the central manager of Vault activity. It is the primary point of
@@ -1592,10 +1601,14 @@ func (c *Core) emitMetrics(stopCh chan struct{}) {
 			}
 			c.metricsMutex.Unlock()
 
+		// TODO set to a longer interval (5m?) once stable.
+		case <-time.After(10 * time.Second):
 			c.logger.Info("requests", "count", atomic.LoadUint64(&c.counters.requests))
-			if err := c.saveCurrentRequestCounters(context.Background(), time.Now()); err != nil {
+			err := c.saveCurrentRequestCounters(context.Background(), time.Now())
+			if err != nil {
 				c.logger.Error("writing request counters to barrier", "err", err)
 			}
+
 		case <-stopCh:
 			return
 		}
