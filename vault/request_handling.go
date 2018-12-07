@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/armon/go-metrics"
@@ -641,9 +642,16 @@ func (c *Core) handleRequest(ctx context.Context, req *logical.Request) (retResp
 	resp, routeErr := c.router.Route(ctx, req)
 	// If we're replicating and we get a read-only error from a backend, need to forward to primary
 	if routeErr != nil {
+		if shouldForward(c, routeErr) {
+			c.logger.Info("requests counter incremented", "path", req.Path, "newvalue", atomic.AddUint64(&c.counters.requests, 1))
+		}
 		resp, routeErr = possiblyForward(ctx, c, req, resp, routeErr)
+	} else {
+		c.logger.Info("requests counter incremented", "path", req.Path, "newvalue", atomic.AddUint64(&c.counters.requests, 1))
 	}
+
 	if resp != nil {
+
 		// If wrapping is used, use the shortest between the request and response
 		var wrapTTL time.Duration
 		var wrapFormat, creationPath string

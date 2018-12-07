@@ -131,6 +131,10 @@ type unlockInformation struct {
 	Nonce string
 }
 
+type counters struct {
+	requests uint64
+}
+
 // Core is used as the central manager of Vault activity. It is the primary point of
 // interface for API handlers and is responsible for managing the logical and physical
 // backends, router, security barrier, and audit trails.
@@ -140,6 +144,8 @@ type Core struct {
 	// The registry of builtin plugins is passed in here as an interface because
 	// if it's used directly, it results in import cycles.
 	builtinRegistry BuiltinRegistry
+
+	counters counters
 
 	// N.B.: This is used to populate a dev token down replication, as
 	// otherwise, after replication is started, a dev would have to go through
@@ -1402,6 +1408,9 @@ func (s standardUnsealStrategy) unseal(ctx context.Context, logger log.Logger, c
 	if err := c.loadCORSConfig(ctx); err != nil {
 		return err
 	}
+	if err := c.loadCurrentRequestCounters(ctx, time.Now()); err != nil {
+		return err
+	}
 	if err := c.loadCredentials(ctx); err != nil {
 		return err
 	}
@@ -1582,6 +1591,11 @@ func (c *Core) emitMetrics(stopCh chan struct{}) {
 				c.expiration.emitMetrics()
 			}
 			c.metricsMutex.Unlock()
+
+			c.logger.Info("requests", "count", atomic.LoadUint64(&c.counters.requests))
+			if err := c.saveCurrentRequestCounters(context.Background(), time.Now()); err != nil {
+				c.logger.Error("writing request counters to barrier", "err", err)
+			}
 		case <-stopCh:
 			return
 		}

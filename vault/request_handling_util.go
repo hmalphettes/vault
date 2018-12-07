@@ -15,6 +15,10 @@ func checkNeedsCG(context.Context, *Core, *logical.Request, *logical.Auth, error
 	return nil, nil, nil, nil
 }
 
+func shouldForward(c *Core, routeErr error) bool {
+	return false
+}
+
 func possiblyForward(ctx context.Context, c *Core, req *logical.Request, resp *logical.Response, routeErr error) (*logical.Response, error) {
 	return resp, routeErr
 }
