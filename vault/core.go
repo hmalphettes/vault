@@ -1592,18 +1592,21 @@ func stopReplicationImpl(c *Core) error {
 
 // emitMetrics is used to periodically expose metrics while running
 func (c *Core) emitMetrics(stopCh chan struct{}) {
+	emitTimer := time.Tick(time.Second)
+	// TODO set writeTimer to a longer interval (5m?) once feature is complete.
+	// The current setting is helpful for debuging.
+	writeTimer := time.Tick(10 * time.Second)
+
 	for {
 		select {
-		case <-time.After(time.Second):
+		case <-emitTimer:
 			c.metricsMutex.Lock()
 			if c.expiration != nil {
 				c.expiration.emitMetrics()
 			}
 			c.metricsMutex.Unlock()
 
-		// TODO set to a longer interval (5m?) once stable.
-		case <-time.After(10 * time.Second):
-			c.logger.Info("requests", "count", atomic.LoadUint64(&c.counters.requests))
+		case <-writeTimer:
 			err := c.saveCurrentRequestCounters(context.Background(), time.Now())
 			if err != nil {
 				c.logger.Error("writing request counters to barrier", "err", err)
