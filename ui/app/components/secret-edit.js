@@ -19,6 +19,7 @@ export default Component.extend(FocusOnInsertMixin, WithNavToNearestAncestor, {
   router: service(),
   store: service(),
   flashMessages: service(),
+  classNameBindings: ['showObfuscatedInputMode:obfuscated-input'],
 
   // a key model
   key: null,
@@ -41,13 +42,16 @@ export default Component.extend(FocusOnInsertMixin, WithNavToNearestAncestor, {
   onDataChange() {},
   onRefresh() {},
   onToggleAdvancedEdit() {},
+  onToggleObfuscatedInput() {},
 
   // did user request advanced mode
   preferAdvancedEdit: false,
+  preferObfuscatedInput: false,
 
   // use a named action here so we don't have to pass one in
   // this will bubble to the route
   toggleAdvancedEdit: 'toggleAdvancedEdit',
+  toggleObfuscatedInput: 'toggleObfuscatedInput',
   error: null,
 
   codemirrorString: null,
@@ -154,6 +158,10 @@ export default Component.extend(FocusOnInsertMixin, WithNavToNearestAncestor, {
 
   showAdvancedMode: computed('preferAdvancedEdit', 'secretDataIsAdvanced', 'lastChange', function() {
     return this.secretDataIsAdvanced || this.preferAdvancedEdit;
+  }),
+
+  showObfuscatedInputMode: computed('preferObfuscatedInput', 'lastChange', function() {
+    return this.preferObfuscatedInput;
   }),
 
   transitionToRoute() {
@@ -330,6 +338,9 @@ export default Component.extend(FocusOnInsertMixin, WithNavToNearestAncestor, {
 
     toggleAdvanced(bool) {
       this.onToggleAdvancedEdit(bool);
+    },
+    toggleObfuscated(bool) {
+      this.onToggleObfuscatedInput(bool);
     },
 
     codemirrorUpdated(val, codemirror) {
