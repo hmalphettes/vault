@@ -179,6 +179,10 @@ export default Component.extend(FocusOnInsertMixin, WithNavToNearestAncestor, {
     return this.preferObfuscatedInput;
   }),
 
+  showObfuscatedInputMode: computed('preferObfuscatedInput', 'lastChange', function() {
+    return this.preferObfuscatedInput;
+  }),
+
   transitionToRoute() {
     return this.router.transitionTo(...arguments);
   },
