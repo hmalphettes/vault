@@ -153,6 +153,8 @@ export default Route.extend(UnloadModelRoute, {
     let backend = this.enginePathParam();
     const preferAdvancedEdit =
       this.controllerFor('vault.cluster.secrets.backend').get('preferAdvancedEdit') || false;
+    const preferObfuscatedInput =
+      this.controllerFor('vault.cluster.secrets.backend').get('preferObfuscatedInput') || false;
     const backendType = this.backendType();
     model.secret.setProperties({ backend });
     controller.setProperties({
@@ -166,6 +168,7 @@ export default Route.extend(UnloadModelRoute, {
         .replace('-root', ''),
       backend,
       preferAdvancedEdit,
+      preferObfuscatedInput,
       backendType,
     });
   },
