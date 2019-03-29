@@ -6,8 +6,12 @@ import fieldToAttrs from 'vault/utils/field-to-attrs';
 const { attr } = DS;
 
 export default AuthConfig.extend({
-  secretKey: attr('string'),
-  accessKey: attr('string'),
+  secretKey: attr('string', {
+    sensitive: true,
+  }),
+  accessKey: attr('string', {
+    sensitive: true,
+  }),
   endpoint: attr('string', {
     label: 'EC2 Endpoint',
   }),
