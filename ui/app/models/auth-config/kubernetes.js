@@ -22,6 +22,7 @@ export default AuthConfig.extend({
   tokenReviewerJwt: attr('string', {
     helpText:
       'A service account JWT used to access the TokenReview API to validate other JWTs during login. If not set the JWT used for login will be used to access the API',
+    sensitive: true,
   }),
 
   pemKeys: attr({
