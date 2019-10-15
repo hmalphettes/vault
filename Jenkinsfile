@@ -17,7 +17,7 @@ pipeline {
               sh(returnStdout: true, script: """
 PATH=\$PATH:${nodeInstallRoot}:${nodeInstallRoot}/bin:${yarnInstallRoot}/bin
 export GO111MODULE=on
-make static-dist
+make static-dist bin
 """)
             }
           }
