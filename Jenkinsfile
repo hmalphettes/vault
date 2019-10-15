@@ -17,7 +17,7 @@ pipeline {
             sshAsVxPipeline {
               sh(returnStdout: true, script: """
 export GOROOT=${goInstallRoot}
-export GOPROXY=https://goproxy.io
+export GOPROXY=https://proxy.golang.org
 PATH=\$PATH:${nodeInstallRoot}:${nodeInstallRoot}/bin:${yarnInstallRoot}/bin:${goInstallRoot}/bin
 export GOBIN=${goInstallRoot}/bin
 export GO111MODULE=on
