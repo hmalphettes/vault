@@ -16,7 +16,9 @@ pipeline {
           configFileProvider([configFile(fileId: 'artifactory-npmrc', targetLocation: '.npmrc')]) {
             sshAsVxPipeline {
               sh(returnStdout: true, script: """
-PATH=\$PATH:${nodeInstallRoot}:${nodeInstallRoot}/bin:${yarnInstallRoot}/bin
+export GOROOT=${goInstallRoot}
+PATH=\$PATH:${nodeInstallRoot}:${nodeInstallRoot}/bin:${yarnInstallRoot}/bin:${goInstallRoot}/bin
+export GOBIN=${goInstallRoot}/bin
 export GO111MODULE=on
 make bootstrap static-dist bin
 """)
