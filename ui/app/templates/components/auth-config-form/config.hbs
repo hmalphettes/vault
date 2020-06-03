@@ -1,5 +1,5 @@
 <form {{action (perform saveModel) on="submit"}}>
-  <div class="box is-sideless is-fullwidth is-marginless">
+  <div class="box is-sideless is-fullwidth is-marginless obfuscated-input">
     <NamespaceReminder @mode="save" @noun="Auth Method" />
     {{message-error model=model}}
     {{#if model.attrs}}

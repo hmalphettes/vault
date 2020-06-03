@@ -20,6 +20,7 @@ export default AuthConfig.extend({
 
   oidcClientSecret: attr('string', {
     label: 'OIDC client secret',
+    sensitive: true,
   }),
   oidcDiscoveryCaPem: attr('string', {
     label: 'OIDC discovery CA PEM',
