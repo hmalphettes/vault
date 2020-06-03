@@ -19,9 +19,11 @@ export default AuthConfig.extend({
     label: 'Client ID',
     helpText:
       'The client ID for credentials to query the Azure APIs. Currently read permissions to query compute resources are required.',
+    sensitive: true,
   }),
   clientSecret: attr('string', {
     helpText: 'The client secret for credentials to query the Azure APIs',
+    sensitive: true,
   }),
 
   googleCertsEndpoint: attr('string'),
